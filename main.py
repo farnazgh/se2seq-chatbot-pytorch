@@ -451,20 +451,6 @@ def evaluate(encoder, decoder, sentence, max_length=MAX_LENGTH):
 
 
 ######################################################################
-#  evaluate randomly
-
-def evaluateRandomly(encoder, decoder, n=10):
-    for i in range(n):
-        pair = random.choice(pairs)
-        print('>', pair[0])
-        print('=', pair[1])
-        output_words, attentions = evaluate(encoder, decoder, pair[0])
-        output_sentence = ' '.join(output_words)
-        print('<', output_sentence)
-        print('')
-
-
-######################################################################
 # Training and Evaluating
 # =======================
 
@@ -480,14 +466,6 @@ if use_cuda:
 
 trainIters(encoder1, attn_decoder1,75000, print_every=5000)
 
-######################################################################
-
-
-evaluateRandomly(encoder1, attn_decoder1)
-
-
-######################################################################
-# evaluate
 
 
 def evaluateAndShowResults(input_sentence):
@@ -527,14 +505,14 @@ def evaluateModelPrecision():
         #load stop words
         swlist = stopwords()
 
-		# cal bleu similarity
+	# cal bleu similarity
         import nltk
         target_wordlist = [s for s in target_.split(' ') if s not in swlist]
         output_wordlist = [s for s in output_.split(' ') if s not in swlist]
         bleu_sim += nltk.translate.bleu_score.sentence_bleu([target_wordlist], output_wordlist)
 
 
-		# cal word2vec simlarity
+	# cal word2vec simlarity
         num = 100
         target_w2v = [ 0.0 for i in range(0,num)]
         output_w2v = [ 0.0 for i in range(0,num)]
@@ -547,8 +525,7 @@ def evaluateModelPrecision():
         for word in output_wordlist:
             output_w2v += model[word]
         
-        # print("word2vec sim= "+str(abs(sum(np.array(output_w2v) - np.array(target_w2v)))/num) )
-        # print("")
+        
         word2vec_sim += abs(sum(np.array(output_w2v) - np.array(target_w2v)))/num
 	
     word2vec_sim /=  float(len(pairs))
@@ -556,6 +533,7 @@ def evaluateModelPrecision():
 
     bleu_sim /= float(len(pairs))
     bleu_sim *= 100
+
 	#print 
     print("word2vec similarity: "+str(word2vec_sim))
     print("bleu similarity: "+str(bleu_sim))
